@@ -51,7 +51,9 @@ const Transaction = {
     incomes(){        
         let income = 0;
         Transaction.all.forEach(transaction => {
-            income += transaction.amount;
+            if(transaction.amount > 0){
+                income += transaction.amount;
+            }
         })    
         return income
     },
@@ -168,11 +170,21 @@ const Form = {
         }
     },
 
+    clearFields(){
+        Form.description.value = "";
+        Form.amount.value = ""
+        Form.date.value = ""
+    },
+
     submit(event){
         event.preventDefault()
         try {
             Form.validateFields()
-            Form.formatValues()
+            const transaction = Form.formatValues()
+            Transaction.add(transaction)
+            Form.clearFields()
+            Modal.close()
+            
         } catch (error) {
             console.log(error)
         }
@@ -196,4 +208,3 @@ const App = {
 }
 
 App.init()
-Transaction.remove(1)
